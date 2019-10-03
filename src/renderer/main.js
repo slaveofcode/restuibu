@@ -9,6 +9,8 @@ import store from './store'
 
 Vue.use(buefy)
 
+axios.defaults.adapter = require('axios/lib/adapters/http')
+
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
 Vue.http = Vue.prototype.$http = axios
 Vue.config.productionTip = false

@@ -1,6 +1,8 @@
 'use strict'
 
 import { app, BrowserWindow } from 'electron'
+import lowdb from 'lowdb'
+import path from 'path'
 
 /**
  * Set `__static` path to static files in production
@@ -14,6 +16,15 @@ let mainWindow
 const winURL = process.env.NODE_ENV === 'development'
   ? `http://localhost:9080`
   : `file://${__dirname}/index.html`
+
+function getDB () {
+  const dbPath = path.join(app.getPath('userData'), 'db.json')
+  return lowdb(dbPath)
+}
+
+function initDB (db) {
+  db.defaults({ directories: [], user: {}, requests: [] }).write()
+}
 
 function createWindow () {
   /**
@@ -46,6 +57,9 @@ app.on('window-all-closed', () => {
 app.on('activate', () => {
   if (mainWindow === null) {
     createWindow()
+    const db = getDB()
+    initDB(db)
+    global.db = db
   }
 })
 

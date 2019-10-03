@@ -36,17 +36,26 @@
 </template>
 
 <script>
-  import SystemInformation from './LandingPage/SystemInformation'
+import SystemInformation from './LandingPage/SystemInformation'
+import { remote } from 'electron'
 
-  export default {
-    name: 'landing-page',
-    components: { SystemInformation },
-    methods: {
-      open (link) {
-        this.$electron.shell.openExternal(link)
-      }
+const db = remote.getGlobal('db')
+
+export default {
+  name: 'landing-page',
+  components: { SystemInformation },
+  created () {
+    const initDir = db.get('directories')
+      .find({ name: 'default' })
+      .value()
+    console.log(initDir)
+  },
+  methods: {
+    open (link) {
+      this.$electron.shell.openExternal(link)
     }
   }
+}
 </script>
 
 <style>

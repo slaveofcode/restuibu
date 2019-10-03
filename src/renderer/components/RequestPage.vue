@@ -12,7 +12,7 @@
       </section>
       <section>
         <b-field>
-          <b-input v-model="result" type="textarea" />
+          <b-input v-model="resultData" placeholder="Result" type="textarea" />
         </b-field>
       </section>
       <section>
@@ -20,7 +20,7 @@
           <b-button type="is-primary"  rounded outlined @click="send()">Send</b-button>
         </div>
       </section>
-      <router-link :to="{ name: 'landing-page' }">Home</router-link>
+      <router-link :to="{ name: 'directory-page' }">Home</router-link>
     </div>
   </div>
 </template>
@@ -43,43 +43,22 @@ export default {
       method: this.$route.params.method.toUpperCase(),
       url: undefined,
       params: undefined,
-      result: undefined
+      resultStatusCode: undefined,
+      resultData: undefined,
+      resultHeaders: undefined
     }
   },
   methods: {
     async send () {
-      // const request = remote.net.request({
-      //   method: this.method,
-      //   url: this.url,
-      //   redirect: 'follow'
-      // })
-
-      // request.setHeader('Accept', 'application/json')
-
-      // if (this.method !== 'GET') {
-      //   request.setHeader('Content-Type', 'application/json')
-      //   request.write(JSON.stringify(this.params), 'utf-8')
-      // }
-
-      // request.on('finish', (res) => {
-      //   console.log('finished')
-      // })
-
-      // request.on('response', (res) => {
-      //   console.log('response', res)
-      //   this.result = res.data
-      // })
-
-      // request.end()
-
       const res = await this.$http({
         method: this.method,
         url: this.url
       })
 
       console.log(res)
-
-      this.result = JSON.stringify(res.data)
+      this.resultHeaders = res.headers
+      this.resultStatusCode = res.status
+      this.resultData = JSON.stringify(res.data)
     }
   }
 }

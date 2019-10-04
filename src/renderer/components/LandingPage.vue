@@ -48,6 +48,11 @@ export default {
     const initDir = db.get('directories')
       .find({ name: 'default' })
       .value()
+    if (!initDir) {
+      db.get('directories')
+        .push({ name: 'default', createdAt: new Date() })
+        .write()
+    }
     console.log(initDir)
   },
   methods: {

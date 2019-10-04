@@ -2,6 +2,7 @@
 
 import { app, BrowserWindow } from 'electron'
 import lowdb from 'lowdb'
+import FileSync from 'lowdb/adapters/FileSync'
 import path from 'path'
 
 /**
@@ -19,12 +20,16 @@ const winURL = process.env.NODE_ENV === 'development'
 
 function getDB () {
   const dbPath = path.join(app.getPath('userData'), 'db.json')
-  return lowdb(dbPath)
+  return lowdb(new FileSync(dbPath))
 }
 
 function initDB (db) {
   db.defaults({ directories: [], user: {}, requests: [] }).write()
 }
+
+const db = getDB()
+initDB(db)
+global.db = db
 
 function createWindow () {
   /**
@@ -57,9 +62,6 @@ app.on('window-all-closed', () => {
 app.on('activate', () => {
   if (mainWindow === null) {
     createWindow()
-    const db = getDB()
-    initDB(db)
-    global.db = db
   }
 })
 
